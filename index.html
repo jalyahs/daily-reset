@@ -7,16 +7,16 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f0f10;
-    --surface: #18181b;
-    --surface2: #212126;
-    --border: #2e2e35;
-    --accent: #e8c547;
-    --accent2: #4a9eff;
-    --danger: #ff5f5f;
-    --success: #4ecf7e;
-    --text: #e8e8ec;
-    --muted: #6b6b78;
+    --bg: #1c1c1e;
+    --surface: #242428;
+    --surface2: #2c2c30;
+    --border: #3a3a40;
+    --accent: #c9a84c;
+    --accent2: #6b9fd4;
+    --danger: #c0675f;
+    --success: #5aaa7a;
+    --text: #d4d4d8;
+    --muted: #7a7a85;
     --mono: 'DM Mono', monospace;
     --sans: 'DM Sans', sans-serif;
     --display: 'Playfair Display', serif;
@@ -645,11 +645,19 @@
 <script>
   const DAYS = ['Mon','Tue','Wed','Thu','Fri'];
   const NOW = new Date();
-  const todayStr = toDateStr(NOW);
+  const todayStr = [
+    NOW.getFullYear(),
+    String(NOW.getMonth() + 1).padStart(2, '0'),
+    String(NOW.getDate()).padStart(2, '0')
+  ].join('-');
   let currentDateStr = todayStr;
 
   function toDateStr(d) {
-    return d.toISOString().split('T')[0];
+    return [
+      d.getFullYear(),
+      String(d.getMonth() + 1).padStart(2, '0'),
+      String(d.getDate()).padStart(2, '0')
+    ].join('-');
   }
 
   function offsetDate(str, days) {
