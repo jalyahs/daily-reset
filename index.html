@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Reset — NTG</title>
+<title>NTG Daily Log</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -29,15 +29,15 @@
     color: var(--text);
     font-family: var(--sans);
     min-height: 100vh;
-    padding: 0;
   }
 
+  /* Header */
   .header {
     padding: 20px 24px 0;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 16px;
+    gap: 12px;
   }
 
   .logo {
@@ -49,14 +49,63 @@
     margin-bottom: 4px;
   }
 
-  .date-display {
-    font-family: var(--display);
-    font-size: 22px;
-    color: var(--text);
-    line-height: 1.1;
+  .date-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
   }
 
-  .reset-btn {
+  .date-display {
+    font-family: var(--display);
+    font-size: 20px;
+    color: var(--text);
+    line-height: 1.1;
+    min-width: 200px;
+  }
+
+  .nav-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 14px;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+  .nav-btn:disabled:hover { border-color: var(--border); color: var(--muted); }
+
+  .today-badge {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 3px 8px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .today-badge.visible { opacity: 1; }
+
+  .header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .print-btn {
     background: none;
     border: 1px solid var(--border);
     color: var(--muted);
@@ -69,17 +118,25 @@
     text-transform: uppercase;
     transition: all 0.2s;
     white-space: nowrap;
-    margin-top: 4px;
   }
-  .reset-btn:hover { border-color: var(--danger); color: var(--danger); }
+  .print-btn:hover { border-color: var(--accent2); color: var(--accent2); }
 
+  .entry-count {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Tabs */
   .tabs {
     display: flex;
-    gap: 0;
     padding: 16px 24px 0;
     border-bottom: 1px solid var(--border);
     margin-top: 16px;
     overflow-x: auto;
+    gap: 0;
   }
 
   .tab {
@@ -101,9 +158,28 @@
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
   .tab:hover:not(.active) { color: var(--text); }
 
-  .page { display: none; padding: 20px 24px 40px; }
+  /* Pages */
+  .page { display: none; padding: 20px 24px 60px; }
   .page.active { display: block; }
 
+  /* Past day banner */
+  .past-banner {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: none;
+  }
+  .past-banner.visible { display: block; }
+
+  /* Section label */
   .section-label {
     font-family: var(--mono);
     font-size: 9px;
@@ -124,6 +200,38 @@
 
   .section { margin-bottom: 24px; }
 
+  /* Fire field */
+  .fire-field {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--danger);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .fire-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--danger);
+    margin-bottom: 6px;
+    opacity: 0.8;
+  }
+  .fire-input {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    outline: none;
+    resize: none;
+    line-height: 1.5;
+  }
+  .fire-input::placeholder { color: var(--muted); font-style: italic; }
+
+  /* Priority items */
   .priority-item {
     display: flex;
     align-items: flex-start;
@@ -155,7 +263,6 @@
     color: var(--text);
     font-family: var(--sans);
     font-size: 15px;
-    font-weight: 400;
     outline: none;
     resize: none;
     line-height: 1.5;
@@ -163,36 +270,7 @@
   }
   .priority-input::placeholder { color: var(--muted); }
 
-  .fire-field {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--danger);
-    border-radius: 8px;
-    padding: 12px 14px;
-    margin-bottom: 10px;
-  }
-  .fire-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--danger);
-    margin-bottom: 6px;
-    opacity: 0.8;
-  }
-  .fire-input {
-    width: 100%;
-    background: none;
-    border: none;
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 14px;
-    outline: none;
-    resize: none;
-    line-height: 1.5;
-  }
-  .fire-input::placeholder { color: var(--muted); font-style: italic; }
-
+  /* CIO cards */
   .cio-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -233,6 +311,7 @@
   }
   .cio-input::placeholder { color: var(--muted); font-style: italic; font-size: 12px; }
 
+  /* Checklist */
   .check-item {
     display: flex;
     align-items: center;
@@ -242,7 +321,6 @@
     cursor: pointer;
   }
   .check-item:last-child { border-bottom: none; }
-
   .check-box {
     width: 18px;
     height: 18px;
@@ -254,26 +332,12 @@
     flex-shrink: 0;
     transition: all 0.15s;
   }
-  .check-item.checked .check-box {
-    background: var(--success);
-    border-color: var(--success);
-  }
-  .check-item.checked .check-box::after {
-    content: '✓';
-    font-size: 11px;
-    color: #0f0f10;
-    font-weight: bold;
-  }
-  .check-item.checked .check-text {
-    text-decoration: line-through;
-    color: var(--muted);
-  }
-  .check-text {
-    font-size: 14px;
-    color: var(--text);
-    transition: all 0.2s;
-  }
+  .check-item.checked .check-box { background: var(--success); border-color: var(--success); }
+  .check-item.checked .check-box::after { content: '✓'; font-size: 11px; color: #0f0f10; font-weight: bold; }
+  .check-item.checked .check-text { text-decoration: line-through; color: var(--muted); }
+  .check-text { font-size: 14px; color: var(--text); transition: all 0.2s; }
 
+  /* Timer */
   .timer-block {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -308,8 +372,8 @@
   }
   .timer-btn.start { border-color: var(--success); color: var(--success); }
   .timer-btn.start:hover { background: var(--success); color: #0f0f10; }
-  .timer-btn:hover { border-color: var(--text); }
 
+  /* Brain dump */
   .brain-dump {
     width: 100%;
     background: var(--surface);
@@ -328,12 +392,12 @@
   .brain-dump:focus { border-color: var(--muted); }
   .brain-dump::placeholder { color: var(--muted); font-style: italic; }
 
+  /* Week grid */
   .week-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 8px;
   }
-
   .day-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -343,7 +407,6 @@
   }
   .day-card:focus-within { border-color: var(--accent); }
   .day-card.today { border-color: var(--accent); }
-
   .day-name {
     font-family: var(--mono);
     font-size: 9px;
@@ -354,7 +417,6 @@
     text-align: center;
   }
   .day-card.today .day-name { color: var(--accent); }
-
   .day-input {
     width: 100%;
     background: none;
@@ -370,6 +432,48 @@
   }
   .day-input::placeholder { color: var(--muted); font-size: 10px; }
 
+  /* History tab */
+  .history-list { display: flex; flex-direction: column; gap: 10px; }
+  .history-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .history-item:hover { border-color: var(--accent); }
+  .history-date {
+    font-family: var(--display);
+    font-size: 16px;
+    color: var(--text);
+  }
+  .history-meta {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .history-arrow {
+    color: var(--muted);
+    font-size: 16px;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Save indicator */
   .save-indicator {
     position: fixed;
     bottom: 16px;
@@ -383,16 +487,40 @@
     transition: opacity 0.3s;
   }
   .save-indicator.show { opacity: 1; }
+
+  /* Readonly state */
+  body.readonly textarea { pointer-events: none; opacity: 0.75; }
+  body.readonly .check-item { pointer-events: none; }
+
+  /* Print styles */
+  @media print {
+    body { background: white; color: black; }
+    .tabs, .header-right, .nav-btn, .save-indicator, .past-banner { display: none !important; }
+    .page { display: block !important; padding: 0; }
+    .surface, .cio-card, .priority-item, .fire-field {
+      background: #f9f9f9 !important;
+      border-color: #ddd !important;
+    }
+    textarea { color: black !important; }
+  }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-left">
-    <div class="logo">NTG // Daily Reset</div>
-    <div class="date-display" id="dateDisplay"></div>
+  <div>
+    <div class="logo">NTG // Daily Log</div>
+    <div class="date-nav">
+      <button class="nav-btn" id="prevBtn" onclick="navigate(-1)" title="Previous day">&#8592;</button>
+      <div class="date-display" id="dateDisplay"></div>
+      <button class="nav-btn" id="nextBtn" onclick="navigate(1)" title="Next day">&#8594;</button>
+      <span class="today-badge" id="todayBadge">Today</span>
+    </div>
   </div>
-  <button class="reset-btn" onclick="resetToday()">↺ Reset Day</button>
+  <div class="header-right">
+    <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+    <div class="entry-count" id="entryCount"></div>
+  </div>
 </div>
 
 <div class="tabs">
@@ -401,14 +529,17 @@
   <button class="tab" onclick="switchTab('recharge', this)">Recharge</button>
   <button class="tab" onclick="switchTab('brain', this)">Brain Dump</button>
   <button class="tab" onclick="switchTab('week', this)">Week</button>
+  <button class="tab" onclick="switchTab('history', this)">History</button>
 </div>
 
+<!-- Priorities -->
 <div class="page active" id="page-priorities">
+  <div class="past-banner" id="pastBanner">Viewing past entry — read only</div>
   <div class="section">
     <div class="section-label">On Fire</div>
     <div class="fire-field">
-      <div class="fire-label">🔥 What's burning right now</div>
-      <textarea class="fire-input" id="onFire" rows="2" placeholder="Anything urgent that can't wait — client issue, escalation, blocker..."></textarea>
+      <div class="fire-label">What's burning right now</div>
+      <textarea class="fire-input" id="onFire" rows="2" placeholder="Anything urgent that can't wait..."></textarea>
     </div>
   </div>
   <div class="section">
@@ -428,6 +559,7 @@
   </div>
 </div>
 
+<!-- CIO Pulse -->
 <div class="page" id="page-cio">
   <div class="section">
     <div class="section-label">Work Layer</div>
@@ -447,8 +579,8 @@
     </div>
   </div>
   <div class="section">
-    <div class="section-label">Rhythm Check — This Week</div>
-    <div class="cio-card full" style="margin-bottom:10px;">
+    <div class="section-label">Rhythm Check</div>
+    <div class="cio-card full">
       <div class="cio-card-label">Deadlines / Renewals / Compliance windows</div>
       <textarea class="cio-input" id="rhythmNotes" rows="3" placeholder="Any deadlines, renewals, or compliance items due this week?"></textarea>
     </div>
@@ -462,34 +594,17 @@
   </div>
 </div>
 
+<!-- Recharge -->
 <div class="page" id="page-recharge">
   <div class="section">
-    <div class="section-label">Low Energy Mode Checklist</div>
+    <div class="section-label">Low Energy Mode</div>
     <div id="checklist">
-      <div class="check-item" onclick="toggleCheck(this)">
-        <div class="check-box"></div>
-        <span class="check-text">Drink a full glass of water</span>
-      </div>
-      <div class="check-item" onclick="toggleCheck(this)">
-        <div class="check-box"></div>
-        <span class="check-text">Step outside for 5 minutes</span>
-      </div>
-      <div class="check-item" onclick="toggleCheck(this)">
-        <div class="check-box"></div>
-        <span class="check-text">Close all tabs — open only what you need</span>
-      </div>
-      <div class="check-item" onclick="toggleCheck(this)">
-        <div class="check-box"></div>
-        <span class="check-text">Pick one small task and finish it</span>
-      </div>
-      <div class="check-item" onclick="toggleCheck(this)">
-        <div class="check-box"></div>
-        <span class="check-text">No context switching for the next 25 min</span>
-      </div>
-      <div class="check-item" onclick="toggleCheck(this)">
-        <div class="check-box"></div>
-        <span class="check-text">Tell someone one thing you need right now</span>
-      </div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Drink a full glass of water</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Step outside for 5 minutes</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Close all tabs — open only what you need</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Pick one small task and finish it</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">No context switching for the next 25 min</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Tell someone one thing you need right now</span></div>
     </div>
   </div>
   <div class="timer-block">
@@ -501,6 +616,7 @@
   </div>
 </div>
 
+<!-- Brain Dump -->
 <div class="page" id="page-brain">
   <div class="section">
     <div class="section-label">Get It Out</div>
@@ -508,6 +624,7 @@
   </div>
 </div>
 
+<!-- Week -->
 <div class="page" id="page-week">
   <div class="section">
     <div class="section-label">Weekly Focus</div>
@@ -515,30 +632,56 @@
   </div>
 </div>
 
+<!-- History -->
+<div class="page" id="page-history">
+  <div class="section">
+    <div class="section-label">Past Entries</div>
+    <div class="history-list" id="historyList"></div>
+  </div>
+</div>
+
 <div class="save-indicator" id="saveIndicator">Saved</div>
 
 <script>
   const DAYS = ['Mon','Tue','Wed','Thu','Fri'];
-  const TODAY = new Date();
-  const todayIndex = TODAY.getDay() === 0 ? 6 : TODAY.getDay() - 1;
-  const dateKey = TODAY.toISOString().split('T')[0];
-  const weekKey = getWeekKey();
+  const NOW = new Date();
+  const todayStr = toDateStr(NOW);
+  let currentDateStr = todayStr;
 
-  function getWeekKey() {
-    const d = new Date(TODAY);
-    d.setDate(d.getDate() - (d.getDay() === 0 ? 6 : d.getDay() - 1));
-    return 'week-' + d.toISOString().split('T')[0];
+  function toDateStr(d) {
+    return d.toISOString().split('T')[0];
   }
 
-  document.getElementById('dateDisplay').textContent = TODAY.toLocaleDateString('en-US', {
-    weekday: 'long', month: 'long', day: 'numeric'
-  });
+  function offsetDate(str, days) {
+    const d = new Date(str + 'T12:00:00');
+    d.setDate(d.getDate() + days);
+    return toDateStr(d);
+  }
+
+  function formatDate(str) {
+    const d = new Date(str + 'T12:00:00');
+    return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  }
+
+  function getWeekKey(str) {
+    const d = new Date(str + 'T12:00:00');
+    d.setDate(d.getDate() - (d.getDay() === 0 ? 6 : d.getDay() - 1));
+    return 'week-' + toDateStr(d);
+  }
 
   function load(key) {
     try { return JSON.parse(localStorage.getItem(key)) || {}; } catch { return {}; }
   }
   function save(key, data) {
     try { localStorage.setItem(key, JSON.stringify(data)); } catch {}
+  }
+  function getAllDateKeys() {
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && /^\d{4}-\d{2}-\d{2}$/.test(k)) keys.push(k);
+    }
+    return keys.sort().reverse();
   }
 
   let saveTimer;
@@ -556,31 +699,63 @@
 
   const dailyFields = ['onFire','p1','p2','p3','backOffice','escalations','vendor','rhythmNotes','delegate','brainDump'];
 
-  function loadDaily() {
-    const data = load(dateKey);
+  function loadDay(dateStr) {
+    const data = load(dateStr);
     dailyFields.forEach(id => {
       const el = document.getElementById(id);
-      if (el && data[id]) { el.value = data[id]; autoResize(el); }
+      if (el) { el.value = data[id] || ''; autoResize(el); }
     });
+    loadChecklist(dateStr);
+    updateUI(dateStr);
   }
 
-  function saveDaily() {
-    const data = load(dateKey);
+  function saveDay() {
+    if (currentDateStr !== todayStr) return;
+    const data = load(currentDateStr);
     dailyFields.forEach(id => {
       const el = document.getElementById(id);
       if (el) data[id] = el.value;
     });
-    save(dateKey, data);
+    save(currentDateStr, data);
     showSaved();
+    updateEntryCount();
   }
 
-  dailyFields.forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('input', () => { autoResize(el); saveDaily(); });
-  });
+  function updateUI(dateStr) {
+    document.getElementById('dateDisplay').textContent = formatDate(dateStr);
+
+    const isToday = dateStr === todayStr;
+    const isPast = dateStr < todayStr;
+    const isFuture = dateStr > todayStr;
+
+    document.getElementById('todayBadge').classList.toggle('visible', isToday);
+    document.getElementById('nextBtn').disabled = isToday || isFuture;
+    document.getElementById('pastBanner').classList.toggle('visible', isPast);
+
+    if (isPast) {
+      document.body.classList.add('readonly');
+    } else {
+      document.body.classList.remove('readonly');
+    }
+
+    updateEntryCount();
+  }
+
+  function updateEntryCount() {
+    const keys = getAllDateKeys();
+    const count = keys.length;
+    document.getElementById('entryCount').textContent = count + (count === 1 ? ' entry' : ' entries');
+  }
+
+  function navigate(direction) {
+    const newDate = offsetDate(currentDateStr, direction);
+    if (newDate > todayStr) return;
+    currentDateStr = newDate;
+    loadDay(currentDateStr);
+  }
 
   function toggleCheck(item) {
+    if (currentDateStr !== todayStr) return;
     item.classList.toggle('checked');
     saveChecklist();
   }
@@ -588,40 +763,81 @@
   function saveChecklist() {
     const items = document.querySelectorAll('.check-item');
     const states = Array.from(items).map(i => i.classList.contains('checked'));
-    const data = load(dateKey);
+    const data = load(currentDateStr);
     data.checklist = states;
-    save(dateKey, data);
+    save(currentDateStr, data);
     showSaved();
   }
 
-  function loadChecklist() {
-    const data = load(dateKey);
-    if (!data.checklist) return;
+  function loadChecklist(dateStr) {
+    const data = load(dateStr);
     const items = document.querySelectorAll('.check-item');
-    data.checklist.forEach((checked, i) => {
-      if (items[i] && checked) items[i].classList.add('checked');
-    });
+    items.forEach(i => i.classList.remove('checked'));
+    if (data.checklist) {
+      data.checklist.forEach((checked, i) => {
+        if (items[i] && checked) items[i].classList.add('checked');
+      });
+    }
   }
 
   function buildWeekGrid() {
     const grid = document.getElementById('weekGrid');
+    grid.innerHTML = '';
+    const weekKey = getWeekKey(todayStr);
     const data = load(weekKey);
+    const todayDayIndex = new Date(todayStr + 'T12:00:00').getDay();
+    const todayIndexMon = todayDayIndex === 0 ? 6 : todayDayIndex - 1;
+
     DAYS.forEach((day, i) => {
       const card = document.createElement('div');
-      card.className = 'day-card' + (i === todayIndex ? ' today' : '');
+      card.className = 'day-card' + (i === todayIndexMon ? ' today' : '');
       card.innerHTML = `<div class="day-name">${day}</div>
         <textarea class="day-input" data-day="${i}" placeholder="focus...">${data['day' + i] || ''}</textarea>`;
       grid.appendChild(card);
     });
+
     grid.querySelectorAll('.day-input').forEach(el => {
       autoResize(el);
       el.addEventListener('input', () => {
         autoResize(el);
-        const data = load(weekKey);
-        data['day' + el.dataset.day] = el.value;
-        save(weekKey, data);
+        const d = load(weekKey);
+        d['day' + el.dataset.day] = el.value;
+        save(weekKey, d);
         showSaved();
       });
+    });
+  }
+
+  function buildHistory() {
+    const list = document.getElementById('historyList');
+    list.innerHTML = '';
+    const keys = getAllDateKeys();
+
+    if (keys.length === 0) {
+      list.innerHTML = '<div class="empty-state">No past entries yet</div>';
+      return;
+    }
+
+    keys.forEach(key => {
+      const data = load(key);
+      const preview = data.p1 || data.onFire || data.backOffice || '';
+      const item = document.createElement('div');
+      item.className = 'history-item';
+      item.innerHTML = `
+        <div>
+          <div class="history-date">${formatDate(key)}</div>
+          ${preview ? `<div class="history-meta">${preview.slice(0, 60)}${preview.length > 60 ? '...' : ''}</div>` : '<div class="history-meta">No content</div>'}
+        </div>
+        <div class="history-arrow">&#8594;</div>
+      `;
+      item.onclick = () => {
+        currentDateStr = key;
+        loadDay(key);
+        switchTab('priorities', document.querySelector('.tab'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelector('.tab').classList.add('active');
+      };
+      list.appendChild(item);
     });
   }
 
@@ -630,8 +846,10 @@
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
     btn.classList.add('active');
+    if (name === 'history') buildHistory();
   }
 
+  // Timer
   let timerSeconds = 300;
   let timerInterval = null;
   let timerRunning = false;
@@ -675,18 +893,15 @@
     document.getElementById('timerDisplay').textContent = m + ':' + s;
   }
 
-  function resetToday() {
-    if (!confirm('Clear today\'s entries and start fresh?')) return;
-    localStorage.removeItem(dateKey);
-    dailyFields.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) { el.value = ''; autoResize(el); }
-    });
-    document.querySelectorAll('.check-item').forEach(i => i.classList.remove('checked'));
-  }
+  // Wire up daily fields
+  dailyFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => { autoResize(el); saveDay(); });
+  });
 
-  loadDaily();
-  loadChecklist();
+  // Init
+  loadDay(todayStr);
   buildWeekGrid();
 </script>
 </body>
