@@ -68,6 +68,23 @@ textarea::placeholder { color: #4d5d7a; font-style: italic; font-size: 13px; }
 .saved { position: fixed; bottom: 16px; right: 16px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #5a9e7a; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
 .saved.show { opacity: 1; }
 @media print { .tabs, .header-right, .nav-btn, .saved, .past-notice, .print-btn { display: none !important; } .page { display: block !important; } body { background: white; color: black; } }
+.pm-section { margin-bottom: 20px; }
+.pm-slabel { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #6b7a99; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.pm-slabel::after { content: ''; flex: 1; height: 1px; background: #3d4d6a; }
+.pm-slabel .pm-prog { font-size: 9px; color: #7eb8d4; white-space: nowrap; }
+.pbar { height: 3px; background: #3d4d6a; border-radius: 2px; margin-bottom: 14px; }
+.pbar-fill { height: 3px; background: #7eb8d4; border-radius: 2px; transition: width 0.3s; }
+.pm-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid #3d4d6a; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.pm-item:last-child { border-bottom: none; }
+.pm-box { width: 20px; height: 20px; border: 1.5px solid #3d4d6a; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #323d54; margin-top: 1px; }
+.pm-item.checked .pm-box { background: #5a9e7a; border-color: #5a9e7a; }
+.pm-item.checked .pm-box::after { content: '✓'; font-size: 11px; color: #2b3245; font-weight: bold; }
+.pm-item.checked .pm-text { text-decoration: line-through; color: #6b7a99; }
+.pm-text { font-size: 14px; color: #c8d0e0; line-height: 1.4; }
+.pm-stat-row { display: flex; gap: 10px; margin-bottom: 20px; }
+.pm-stat { background: #323d54; border: 1px solid #3d4d6a; border-radius: 8px; padding: 10px 14px; flex: 1; text-align: center; }
+.pm-stat-num { font-family: 'DM Mono', monospace; font-size: 22px; color: #7eb8d4; }
+.pm-stat-lbl { font-family: 'DM Mono', monospace; font-size: 9px; color: #6b7a99; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -95,6 +112,7 @@ textarea::placeholder { color: #4d5d7a; font-style: italic; font-size: 13px; }
   <button class="tab" data-tab="brain">Brain Dump</button>
   <button class="tab" data-tab="week">Week</button>
   <button class="tab" data-tab="history">History</button>
+  <button class="tab" data-tab="map">Project Map</button>
 </div>
 
 <div class="page active" id="page-priorities">
@@ -187,6 +205,97 @@ textarea::placeholder { color: #4d5d7a; font-style: italic; font-size: 13px; }
   <div class="section">
     <div class="slabel">Past Entries</div>
     <div class="hist-list" id="histList"></div>
+  </div>
+</div>
+
+<div class="page" id="page-map">
+  <div class="pm-stat-row">
+    <div class="pm-stat"><div class="pm-stat-num" id="pmTotal">0</div><div class="pm-stat-lbl">Total</div></div>
+    <div class="pm-stat"><div class="pm-stat-num" id="pmDone">0</div><div class="pm-stat-lbl">Done</div></div>
+    <div class="pm-stat"><div class="pm-stat-num" id="pmLeft">0</div><div class="pm-stat-lbl">Left</div></div>
+  </div>
+
+  <div class="pm-section">
+    <div class="pm-slabel">SharePoint — create new root folders <span class="pm-prog" id="prog-sp-create"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-sp-create"></div></div>
+    <div id="group-sp-create">
+      <div class="pm-item" data-group="sp-create"><div class="pm-box"></div><span class="pm-text">Create Policies &amp; Compliance</span></div>
+      <div class="pm-item" data-group="sp-create"><div class="pm-box"></div><span class="pm-text">Create Client Records</span></div>
+      <div class="pm-item" data-group="sp-create"><div class="pm-box"></div><span class="pm-text">Create Business Operations</span></div>
+      <div class="pm-item" data-group="sp-create"><div class="pm-box"></div><span class="pm-text">Create Technical Resources</span></div>
+      <div class="pm-item" data-group="sp-create"><div class="pm-box"></div><span class="pm-text">Create Training</span></div>
+    </div>
+  </div>
+
+  <div class="pm-section">
+    <div class="pm-slabel">SharePoint — move existing folders <span class="pm-prog" id="prog-sp-move"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-sp-move"></div></div>
+    <div id="group-sp-move">
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Policies → Policies &amp; Compliance</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Audits → Policies &amp; Compliance</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">PenTests → Policies &amp; Compliance</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Client Data → Client Records</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Client Workstations and Servers → Client Records</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">365 License Audit Info → Client Records</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">NTG Inventory → Business Operations</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Internal Reports → Business Operations</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Sangoma Documents → Business Operations</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Services → Business Operations</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Vendor Data → Business Operations</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">~ RUNBOOKS → Technical Resources</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Process Maps → Technical Resources</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Templates → Technical Resources</span></div>
+      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Training → Training</span></div>
+    </div>
+  </div>
+
+  <div class="pm-section">
+    <div class="pm-slabel">SharePoint — Technician Depot contents <span class="pm-prog" id="prog-sp-depot"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-sp-depot"></div></div>
+    <div id="group-sp-depot">
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Snippets and Scripts → Technical Resources</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Group Policies → Technical Resources</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">SSLCerts → Technical Resources</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">ISOs → Technical Resources</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">MDM → Technical Resources</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Tools → Technical Resources</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">DATTO Backup &amp; Restore → Technical Resources</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">MyGlue Action Pack → Technical Resources</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Client Communication Templates → Client Records</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Client Onboarding Templates → Client Records</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Service Management Schedules → Business Operations</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Training (inside Depot) → Training</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Images / Logos / Font → evaluate, move or delete</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Downloads → evaluate and delete or sort</span></div>
+      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Delete Technician Depot folder (once emptied)</span></div>
+    </div>
+  </div>
+
+  <div class="pm-section">
+    <div class="pm-slabel">SharePoint — loose root files <span class="pm-prog" id="prog-sp-files"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-sp-files"></div></div>
+    <div id="group-sp-files">
+      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">AppleCare_Proof_of_Coverage.eml → Business Operations</span></div>
+      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">Devices (3).csv → Business Operations / NTG Inventory</span></div>
+      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">Reno Trip Leads - RMC.xlsx → move to Sales &amp; Marketing library (not Documents)</span></div>
+      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">SEG Application &amp; Requirements.docx → Technical Resources</span></div>
+      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">Splashtop Billing Info.xlsx → Business Operations</span></div>
+      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">desktop.ini → delete</span></div>
+      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">stamps64 (3)20.4.exe → Technical Resources or delete</span></div>
+    </div>
+  </div>
+
+  <div class="pm-section">
+    <div class="pm-slabel">IT Glue — cleanup &amp; structure <span class="pm-prog" id="prog-itg"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-itg"></div></div>
+    <div id="group-itg">
+      <div class="pm-item" data-group="itg"><div class="pm-box"></div><span class="pm-text">CyberQP - Integrating Customers with Autotask → KB (Internal)</span></div>
+      <div class="pm-item" data-group="itg"><div class="pm-box"></div><span class="pm-text">Pegasus Static Allocation - Spectrum Fiber → KB (Internal)</span></div>
+      <div class="pm-item" data-group="itg"><div class="pm-box"></div><span class="pm-text">Protecting RDWeb from Brute Force Attacks → KB (Internal)</span></div>
+      <div class="pm-item" data-group="itg"><div class="pm-box"></div><span class="pm-text">Tango Test → evaluate, keep or delete</span></div>
+      <div class="pm-item" data-group="itg"><div class="pm-box"></div><span class="pm-text">Add Runbooks folder to IT Glue root</span></div>
+      <div class="pm-item" data-group="itg"><div class="pm-box"></div><span class="pm-text">Remove 1000/2000/3000/4000 numbering from SOP subfolders</span></div>
+    </div>
   </div>
 </div>
 
@@ -337,6 +446,55 @@ document.getElementById('timerResetBtn').addEventListener('click',function(e){
 
 loadDay(TODAY);
 buildWeek();
+
+// Project map
+const PM_KEY = 'pm-checklist';
+const GROUPS = ['sp-create','sp-move','sp-depot','sp-files','itg'];
+
+function pmLoad() {
+  const data = lg(PM_KEY);
+  document.querySelectorAll('.pm-item').forEach((item, i) => {
+    if (data[i]) item.classList.add('checked');
+  });
+  pmUpdateAll();
+}
+
+function pmSave() {
+  const data = {};
+  document.querySelectorAll('.pm-item').forEach((item, i) => {
+    if (item.classList.contains('checked')) data[i] = true;
+  });
+  ls(PM_KEY, data);
+}
+
+function pmUpdateAll() {
+  const all = document.querySelectorAll('.pm-item');
+  const done = document.querySelectorAll('.pm-item.checked');
+  document.getElementById('pmTotal').textContent = all.length;
+  document.getElementById('pmDone').textContent = done.length;
+  document.getElementById('pmLeft').textContent = all.length - done.length;
+  GROUPS.forEach(g => {
+    const items = document.querySelectorAll('.pm-item[data-group="'+g+'"]');
+    const checked = document.querySelectorAll('.pm-item[data-group="'+g+'"].checked');
+    const pct = items.length > 0 ? Math.round((checked.length / items.length) * 100) : 0;
+    const progEl = document.getElementById('prog-'+g);
+    const barEl = document.getElementById('bar-'+g);
+    if (progEl) progEl.textContent = checked.length + '/' + items.length;
+    if (barEl) barEl.style.width = pct + '%';
+  });
+}
+
+document.querySelectorAll('.pm-item').forEach(item => {
+  item.addEventListener('click', function(e) {
+    e.preventDefault();
+    this.classList.toggle('checked');
+    pmSave();
+    pmUpdateAll();
+    showSaved();
+  });
+});
+
+pmLoad();
 </script>
 </body>
 </html>
