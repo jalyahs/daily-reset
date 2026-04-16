@@ -912,71 +912,26 @@ document.getElementById('timerResetBtn').addEventListener('click',function(e){
   document.getElementById('timerBtn').textContent='Start';
 });
 
-// GitHub Gist shared storage for project tabs
-const GIST_ID='8b9700dec79e37e8de39471388e38b2c';
-const GIST_TOKEN='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';
-const GIST_FILE='ntg-checklist.json';
-const GIST_URL='https://api.github.com/gists/'+GIST_ID;
-
+// Project tab checklists — localStorage per device
 const PT_CONFIG=[
-  {key:'genesys',groups:['g1','g2','g3','g4'],total:'gTotal',done:'gDone',left:'gLeft'},
-  {key:'itglue', groups:['i1','i2'],           total:'iTotal',done:'iDone',left:'iLeft'},
-  {key:'ops',    groups:['o1','o2'],            total:'oTotal',done:'oDone',left:'oLeft'},
+  {key:'pt-genesys',groups:['g1','g2','g3','g4'],total:'gTotal',done:'gDone',left:'gLeft'},
+  {key:'pt-itglue', groups:['i1','i2'],           total:'iTotal',done:'iDone',left:'iLeft'},
+  {key:'pt-ops',    groups:['o1','o2'],            total:'oTotal',done:'oDone',left:'oLeft'},
 ];
-
-let ptData={genesys:{},itglue:{},ops:{}};
-let ptSaveTimer=null;
-
-function ptGetTab(item){
+let ptData={'pt-genesys':{},'pt-itglue':{},'pt-ops':{}};
+function ptGetKey(item){
   const g=item.dataset.group;
-  if(['g1','g2','g3','g4'].includes(g))return'genesys';
-  if(['i1','i2'].includes(g))return'itglue';
-  if(['o1','o2'].includes(g))return'ops';
+  if(['g1','g2','g3','g4'].includes(g))return'pt-genesys';
+  if(['i1','i2'].includes(g))return'pt-itglue';
+  if(['o1','o2'].includes(g))return'pt-ops';
   return null;
 }
-
-async function ptLoad(){
-  try{
-    const res=await fetch(GIST_URL,{headers:{'Authorization':'token '+GIST_TOKEN,'Accept':'application/vnd.github.v3+json'}});
-    if(res.ok){
-      const gist=await res.json();
-      const content=gist.files[GIST_FILE].content;
-      const json=JSON.parse(content);
-      ptData=Object.assign({genesys:{},itglue:{},ops:{}},json);
-      try{localStorage.setItem('pt-cache',JSON.stringify(ptData));}catch{}
-    }
-  }catch(e){
-    console.warn('Gist load failed, using local cache');
-    try{const c=localStorage.getItem('pt-cache');if(c)ptData=JSON.parse(c);}catch{}
-  }
-  ptApply();
+function ptLoad(){
+  PT_CONFIG.forEach(cfg=>{try{const d=localStorage.getItem(cfg.key);if(d)ptData[cfg.key]=JSON.parse(d);}catch{}});
+  document.querySelectorAll('.pt-item').forEach((item,i)=>{const k=ptGetKey(item);if(k&&ptData[k]&&ptData[k][i])item.classList.add('checked');});
   ptUpdateAll();
 }
-
-function ptApply(){
-  document.querySelectorAll('.pt-item').forEach((item,i)=>{
-    const tab=ptGetTab(item);
-    if(tab&&ptData[tab]&&ptData[tab][i])item.classList.add('checked');
-    else item.classList.remove('checked');
-  });
-}
-
-async function ptSaveNow(){
-  try{localStorage.setItem('pt-cache',JSON.stringify(ptData));}catch{}
-  try{
-    await fetch(GIST_URL,{
-      method:'PATCH',
-      headers:{'Authorization':'token '+GIST_TOKEN,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-      body:JSON.stringify({files:{[GIST_FILE]:{content:JSON.stringify(ptData)}}})
-    });
-  }catch(e){console.warn('Gist save failed, cached locally');}
-}
-
-function ptSaveDebounced(){
-  clearTimeout(ptSaveTimer);
-  ptSaveTimer=setTimeout(ptSaveNow,800);
-}
-
+function ptSave(key){try{localStorage.setItem(key,JSON.stringify(ptData[key]));}catch{}}
 function ptUpdateAll(){
   PT_CONFIG.forEach(cfg=>{
     let total=0,done=0;
@@ -995,17 +950,16 @@ function ptUpdateAll(){
     document.getElementById(cfg.left).textContent=total-done;
   });
 }
-
 document.querySelectorAll('.pt-item').forEach((item,i)=>{
   item.addEventListener('click',function(e){
     e.preventDefault();
     this.classList.toggle('checked');
-    const tab=ptGetTab(this);
-    if(tab){
-      if(!ptData[tab])ptData[tab]={};
-      if(this.classList.contains('checked'))ptData[tab][i]=true;
-      else delete ptData[tab][i];
-      ptSaveDebounced();
+    const k=ptGetKey(this);
+    if(k){
+      if(!ptData[k])ptData[k]={};
+      if(this.classList.contains('checked'))ptData[k][i]=true;
+      else delete ptData[k][i];
+      ptSave(k);
     }
     ptUpdateAll();
     showSaved();
