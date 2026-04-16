@@ -912,36 +912,63 @@ document.getElementById('timerResetBtn').addEventListener('click',function(e){
   document.getElementById('timerBtn').textContent='Start';
 });
 
-const PT_GENESYS='pt-genesys',PT_ITGLUE='pt-itglue',PT_OPS='pt-ops';
+// JSONBin shared storage for project tabs
+const BIN_ID='69e04c39856a6821893bdd41';
+const BIN_KEY='$2a$10$X5KYbRXMbFxO744/kYU75eOnVqY/o2Zw3tWZt8GoM44/r43Fy/Saq';
+const BIN_URL='https://api.jsonbin.io/v3/b/'+BIN_ID;
+
 const PT_CONFIG=[
-  {key:PT_GENESYS,groups:['g1','g2','g3','g4'],total:'gTotal',done:'gDone',left:'gLeft'},
-  {key:PT_ITGLUE, groups:['i1','i2'],           total:'iTotal',done:'iDone',left:'iLeft'},
-  {key:PT_OPS,    groups:['o1','o2'],            total:'oTotal',done:'oDone',left:'oLeft'},
+  {key:'genesys',groups:['g1','g2','g3','g4'],total:'gTotal',done:'gDone',left:'gLeft'},
+  {key:'itglue', groups:['i1','i2'],           total:'iTotal',done:'iDone',left:'iLeft'},
+  {key:'ops',    groups:['o1','o2'],            total:'oTotal',done:'oDone',left:'oLeft'},
 ];
 
-function ptGetKey(item){
+let ptData={genesys:{},itglue:{},ops:{}};
+let ptSaveTimer=null;
+
+function ptGetTab(item){
   const g=item.dataset.group;
-  if(['g1','g2','g3','g4'].includes(g))return PT_GENESYS;
-  if(['i1','i2'].includes(g))return PT_ITGLUE;
-  if(['o1','o2'].includes(g))return PT_OPS;
+  if(['g1','g2','g3','g4'].includes(g))return'genesys';
+  if(['i1','i2'].includes(g))return'itglue';
+  if(['o1','o2'].includes(g))return'ops';
   return null;
 }
 
-function ptSave(storeKey){
-  const data={};
-  document.querySelectorAll('.pt-item').forEach((item,i)=>{
-    if(ptGetKey(item)===storeKey&&item.classList.contains('checked'))data[i]=true;
-  });
-  ls(storeKey,data);
+async function ptLoad(){
+  try{
+    const res=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':BIN_KEY,'X-Bin-Meta':'false'}});
+    if(res.ok){
+      const json=await res.json();
+      ptData=Object.assign({genesys:{},itglue:{},ops:{}},json);
+    }
+  }catch(e){console.warn('JSONBin load failed, using local cache');
+    try{const c=localStorage.getItem('pt-cache');if(c)ptData=JSON.parse(c);}catch{}
+  }
+  ptApply();
+  ptUpdateAll();
 }
 
-function ptLoad(){
-  const allItems=document.querySelectorAll('.pt-item');
-  [PT_GENESYS,PT_ITGLUE,PT_OPS].forEach(storeKey=>{
-    const data=lg(storeKey);
-    allItems.forEach((item,i)=>{if(ptGetKey(item)===storeKey&&data[i])item.classList.add('checked');});
+function ptApply(){
+  document.querySelectorAll('.pt-item').forEach((item,i)=>{
+    const tab=ptGetTab(item);
+    if(tab&&ptData[tab]&&ptData[tab][i])item.classList.add('checked');
+    else item.classList.remove('checked');
   });
-  ptUpdateAll();
+}
+
+async function ptSaveNow(){
+  try{localStorage.setItem('pt-cache',JSON.stringify(ptData));}catch{}
+  try{
+    await fetch(BIN_URL,{method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY},
+      body:JSON.stringify(ptData)
+    });
+  }catch(e){console.warn('JSONBin save failed, cached locally');}
+}
+
+function ptSaveDebounced(){
+  clearTimeout(ptSaveTimer);
+  ptSaveTimer=setTimeout(ptSaveNow,800);
 }
 
 function ptUpdateAll(){
@@ -963,12 +990,17 @@ function ptUpdateAll(){
   });
 }
 
-document.querySelectorAll('.pt-item').forEach(item=>{
+document.querySelectorAll('.pt-item').forEach((item,i)=>{
   item.addEventListener('click',function(e){
     e.preventDefault();
     this.classList.toggle('checked');
-    const k=ptGetKey(this);
-    if(k)ptSave(k);
+    const tab=ptGetTab(this);
+    if(tab){
+      if(!ptData[tab])ptData[tab]={};
+      if(this.classList.contains('checked'))ptData[tab][i]=true;
+      else delete ptData[tab][i];
+      ptSaveDebounced();
+    }
     ptUpdateAll();
     showSaved();
   });
