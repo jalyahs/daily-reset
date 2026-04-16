@@ -912,10 +912,11 @@ document.getElementById('timerResetBtn').addEventListener('click',function(e){
   document.getElementById('timerBtn').textContent='Start';
 });
 
-// JSONBin shared storage for project tabs
-const BIN_ID='69e04c39856a6821893bdd41';
-const BIN_KEY='$2a$10$X5KYbRXMbFxO744/kYU75eOnVqY/o2Zw3tWZt8GoM44/r43Fy/Saq';
-const BIN_URL='https://api.jsonbin.io/v3/b/'+BIN_ID;
+// GitHub Gist shared storage for project tabs
+const GIST_ID='8b9700dec79e37e8de39471388e38b2c';
+const GIST_TOKEN='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';
+const GIST_FILE='ntg-checklist.json';
+const GIST_URL='https://api.github.com/gists/'+GIST_ID;
 
 const PT_CONFIG=[
   {key:'genesys',groups:['g1','g2','g3','g4'],total:'gTotal',done:'gDone',left:'gLeft'},
@@ -936,23 +937,19 @@ function ptGetTab(item){
 
 async function ptLoad(){
   try{
-    const res=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':BIN_KEY,'X-Bin-Meta':'false'}});
+    const res=await fetch(GIST_URL,{headers:{'Authorization':'token '+GIST_TOKEN,'Accept':'application/vnd.github.v3+json'}});
     if(res.ok){
-      const json=await res.json();
-      // Only update if bin has actual data
-      const hasData=Object.values(json).some(v=>Object.keys(v).length>0);
-      if(hasData){
-        ptData=Object.assign({genesys:{},itglue:{},ops:{}},json);
-        ptApply();
-      } else {
-        // Bin is empty — try local cache first
-        try{const c=localStorage.getItem('pt-cache');if(c){ptData=JSON.parse(c);ptApply();}}catch{}
-      }
+      const gist=await res.json();
+      const content=gist.files[GIST_FILE].content;
+      const json=JSON.parse(content);
+      ptData=Object.assign({genesys:{},itglue:{},ops:{}},json);
+      try{localStorage.setItem('pt-cache',JSON.stringify(ptData));}catch{}
     }
   }catch(e){
-    console.warn('JSONBin load failed, using local cache');
-    try{const c=localStorage.getItem('pt-cache');if(c){ptData=JSON.parse(c);ptApply();}}catch{}
+    console.warn('Gist load failed, using local cache');
+    try{const c=localStorage.getItem('pt-cache');if(c)ptData=JSON.parse(c);}catch{}
   }
+  ptApply();
   ptUpdateAll();
 }
 
@@ -967,11 +964,12 @@ function ptApply(){
 async function ptSaveNow(){
   try{localStorage.setItem('pt-cache',JSON.stringify(ptData));}catch{}
   try{
-    await fetch(BIN_URL,{method:'PUT',
-      headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY},
-      body:JSON.stringify(ptData)
+    await fetch(GIST_URL,{
+      method:'PATCH',
+      headers:{'Authorization':'token '+GIST_TOKEN,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body:JSON.stringify({files:{[GIST_FILE]:{content:JSON.stringify(ptData)}}})
     });
-  }catch(e){console.warn('JSONBin save failed, cached locally');}
+  }catch(e){console.warn('Gist save failed, cached locally');}
 }
 
 function ptSaveDebounced(){
