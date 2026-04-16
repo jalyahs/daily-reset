@@ -7,90 +7,496 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #2b3245; color: #c8d0e0; font-family: 'DM Sans', sans-serif; min-height: 100vh; }
-.header { padding: 20px 24px 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-.logo { font-family: 'DM Mono', monospace; font-size: 10px; color: #6b7a99; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
-.date-nav { display: flex; align-items: center; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
-.date-display { font-family: 'Playfair Display', serif; font-size: 18px; color: #dce4f0; }
-.nav-btn { background: none; border: 1px solid #3d4d6a; color: #6b7a99; font-size: 14px; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
-.today-pill { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #7eb8d4; border: 1px solid #7eb8d4; padding: 3px 8px; border-radius: 4px; }
-.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-.print-btn { background: none; border: 1px solid #3d4d6a; color: #6b7a99; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; padding: 7px 12px; border-radius: 4px; cursor: pointer; text-transform: uppercase; -webkit-tap-highlight-color: transparent; }
-.entry-count { font-family: 'DM Mono', monospace; font-size: 9px; color: #6b7a99; letter-spacing: 0.1em; }
-.tabs { display: flex; padding: 16px 24px 0; border-bottom: 1px solid #3d4d6a; margin-top: 16px; overflow-x: auto; }
-.tab { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #6b7a99; padding: 8px 14px; cursor: pointer; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
-.tab.active { color: #7eb8d4; border-bottom-color: #7eb8d4; }
-.tab:hover:not(.active) { color: #c8d0e0; }
-.page { display: none; padding: 20px 24px 60px; }
+
+:root {
+  --bg: #eaf0f8;
+  --surface: #ffffff;
+  --surface2: #f2f6fb;
+  --border: #c8d8eb;
+  --border2: #b0c4de;
+  --primary: #056CF2;
+  --primary2: #0583F2;
+  --text: #1a1e2e;
+  --muted: #5a6a8a;
+  --hint: #8a9ab8;
+  --fire: #F25D07;
+  --amber: #F28B0C;
+  --success: #2a7a3b;
+  --success-bg: #e8f5ec;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --display: 'Playfair Display', serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+}
+
+.outer {
+  max-width: 860px;
+  margin: 0 auto;
+  background: var(--bg);
+  min-height: 100vh;
+  box-shadow: 0 0 40px rgba(5,108,242,0.08);
+}
+
+.header {
+  padding: 20px 28px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-left { padding-bottom: 16px; }
+
+.logo {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--primary);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  opacity: 0.8;
+}
+
+.date-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.date-display {
+  font-family: var(--display);
+  font-size: 20px;
+  color: var(--text);
+}
+
+.nav-btn {
+  background: none;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  font-size: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.15s;
+}
+.nav-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+.today-pill {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  padding-bottom: 16px;
+}
+
+.print-btn {
+  background: none;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 7px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.15s;
+}
+.print-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+.entry-count {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--hint);
+  letter-spacing: 0.1em;
+}
+
+.tabs {
+  display: flex;
+  padding: 0 28px;
+  border-bottom: 2px solid var(--border);
+  background: var(--surface);
+  overflow-x: auto;
+}
+
+.tab {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 12px 14px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.15s;
+}
+.tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.tab:hover:not(.active) { color: var(--text); }
+
+.page { display: none; padding: 24px 28px 60px; }
 .page.active { display: block; }
-.past-notice { background: #323d54; border: 1px solid #3d4d6a; border-left: 3px solid #7eb8d4; border-radius: 8px; padding: 10px 14px; margin-bottom: 20px; font-family: 'DM Mono', monospace; font-size: 10px; color: #7eb8d4; }
-.slabel { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #6b7a99; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-.slabel::after { content: ''; flex: 1; height: 1px; background: #3d4d6a; }
+
+.past-notice {
+  background: #e8f0fb;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--primary);
+}
+
+.slabel {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.slabel::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
 .section { margin-bottom: 24px; }
-.fire-wrap { background: #323d54; border: 1px solid #3d4d6a; border-left: 3px solid #c47a6a; border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
-.fire-lbl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: #c47a6a; margin-bottom: 6px; }
-.pitem { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; background: #323d54; border: 1px solid #3d4d6a; border-radius: 8px; padding: 12px 14px; }
-.pitem:focus-within { border-color: #7eb8d4; }
-.pnum { font-family: 'Playfair Display', serif; font-size: 26px; color: #3d4d6a; line-height: 1; min-width: 22px; margin-top: -2px; transition: color 0.2s; }
-.pitem:focus-within .pnum { color: #7eb8d4; }
-.ccard { background: #323d54; border: 1px solid #3d4d6a; border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+
+.fire-wrap {
+  background: #fff4ee;
+  border: 1px solid #f5c4a0;
+  border-left: 3px solid var(--fire);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.fire-lbl {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fire);
+  margin-bottom: 6px;
+}
+
+.pitem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  transition: border-color 0.15s;
+}
+.pitem:focus-within { border-color: var(--primary); }
+
+.pnum {
+  font-family: var(--display);
+  font-size: 26px;
+  color: var(--border2);
+  line-height: 1;
+  min-width: 22px;
+  margin-top: -2px;
+  transition: color 0.15s;
+}
+.pitem:focus-within .pnum { color: var(--primary); }
+
+.ccard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  transition: border-color 0.15s;
+}
+.ccard:focus-within { border-color: var(--primary2); }
+
 .crow { display: flex; gap: 10px; margin-bottom: 10px; }
 .crow .ccard { flex: 1; margin-bottom: 0; }
-.clbl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: #7eb8d4; margin-bottom: 6px; }
-textarea { width: 100%; background: none; border: none; color: #c8d0e0; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; resize: none; line-height: 1.6; display: block; min-height: 44px; }
-textarea::placeholder { color: #4d5d7a; font-style: italic; font-size: 13px; }
-.check-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #3d4d6a; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+.clbl {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary2);
+  margin-bottom: 6px;
+}
+
+textarea {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  outline: none;
+  resize: none;
+  line-height: 1.6;
+  display: block;
+  min-height: 44px;
+}
+textarea::placeholder { color: var(--hint); font-style: italic; font-size: 13px; }
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
 .check-item:last-child { border-bottom: none; }
-.cbox { width: 22px; height: 22px; border: 1.5px solid #3d4d6a; border-radius: 5px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #323d54; }
-.check-item.checked .cbox { background: #5a9e7a; border-color: #5a9e7a; }
-.check-item.checked .cbox::after { content: '✓'; font-size: 13px; color: #2b3245; font-weight: bold; }
-.check-item.checked .ctext { text-decoration: line-through; color: #6b7a99; }
-.ctext { font-size: 15px; color: #c8d0e0; }
-.timer-block { background: #323d54; border: 1px solid #3d4d6a; border-radius: 8px; padding: 20px; text-align: center; margin-top: 16px; }
-.timer-disp { font-family: 'DM Mono', monospace; font-size: 48px; color: #7eb8d4; letter-spacing: 0.05em; margin-bottom: 16px; line-height: 1; }
-.timer-disp.running { color: #5a9e7a; }
-.timer-disp.done { color: #c47a6a; }
+
+.cbox {
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--border2);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--surface);
+  transition: all 0.15s;
+}
+.check-item.checked .cbox { background: var(--amber); border-color: var(--amber); }
+.check-item.checked .cbox::after { content: '✓'; font-size: 13px; color: white; font-weight: bold; }
+.check-item.checked .ctext { text-decoration: line-through; color: var(--hint); }
+.ctext { font-size: 15px; color: var(--text); }
+
+.timer-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 16px;
+}
+.timer-disp {
+  font-family: var(--mono);
+  font-size: 48px;
+  color: var(--primary);
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+.timer-disp.running { color: var(--success); }
+.timer-disp.done { color: var(--fire); }
 .timer-btns { display: flex; gap: 10px; justify-content: center; }
-.tbtn { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 20px; border-radius: 6px; cursor: pointer; border: 1px solid #3d4d6a; background: none; color: #c8d0e0; -webkit-tap-highlight-color: transparent; }
-.tbtn.go { border-color: #5a9e7a; color: #5a9e7a; }
-.brain-ta { background: #323d54; border: 1px solid #3d4d6a; border-radius: 8px; padding: 14px; min-height: 200px; line-height: 1.7; font-size: 14px; }
+.tbtn {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--border2);
+  background: none;
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.15s;
+}
+.tbtn.go { border-color: var(--success); color: var(--success); }
+.tbtn.go:hover { background: var(--success); color: white; }
+
+.brain-ta {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  min-height: 200px;
+  line-height: 1.7;
+  font-size: 14px;
+  transition: border-color 0.15s;
+}
+.brain-ta:focus { border-color: var(--muted); }
+
 .week-row { display: flex; gap: 8px; }
-.dcard { background: #323d54; border: 1px solid #3d4d6a; border-radius: 8px; padding: 10px 8px; flex: 1; }
-.dcard.today { border-color: #7eb8d4; }
-.dname { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #6b7a99; margin-bottom: 8px; text-align: center; }
-.dcard.today .dname { color: #7eb8d4; }
+.dcard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 8px;
+  flex: 1;
+  transition: border-color 0.15s;
+}
+.dcard:focus-within { border-color: var(--primary); }
+.dcard.today { border-color: var(--primary); background: #eef4fe; }
+.dname {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hint);
+  margin-bottom: 8px;
+  text-align: center;
+}
+.dcard.today .dname { color: var(--primary); }
+
 .hist-list { display: flex; flex-direction: column; gap: 10px; }
-.hist-item { background: #323d54; border: 1px solid #3d4d6a; border-radius: 8px; padding: 14px 16px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; -webkit-tap-highlight-color: transparent; }
-.hist-date { font-family: 'Playfair Display', serif; font-size: 16px; color: #dce4f0; }
-.hist-meta { font-family: 'DM Mono', monospace; font-size: 9px; color: #6b7a99; margin-top: 4px; }
-.hist-arrow { color: #6b7a99; font-size: 18px; }
-.empty { text-align: center; padding: 48px 0; color: #6b7a99; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
-.saved { position: fixed; bottom: 16px; right: 16px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #5a9e7a; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+.hist-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s;
+}
+.hist-item:hover { border-color: var(--primary); }
+.hist-date { font-family: var(--display); font-size: 16px; color: var(--text); }
+.hist-meta { font-family: var(--mono); font-size: 9px; color: var(--hint); margin-top: 4px; }
+.hist-arrow { color: var(--hint); font-size: 18px; }
+.empty {
+  text-align: center;
+  padding: 48px 0;
+  color: var(--hint);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.saved {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--success);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
 .saved.show { opacity: 1; }
-@media print { .tabs, .header-right, .nav-btn, .saved, .past-notice, .print-btn { display: none !important; } .page { display: block !important; } body { background: white; color: black; } }
-.pm-section { margin-bottom: 20px; }
-.pm-slabel { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #6b7a99; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-.pm-slabel::after { content: ''; flex: 1; height: 1px; background: #3d4d6a; }
-.pm-slabel .pm-prog { font-size: 9px; color: #7eb8d4; white-space: nowrap; }
-.pbar { height: 3px; background: #3d4d6a; border-radius: 2px; margin-bottom: 14px; }
-.pbar-fill { height: 3px; background: #7eb8d4; border-radius: 2px; transition: width 0.3s; }
-.pm-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid #3d4d6a; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.pm-item:last-child { border-bottom: none; }
-.pm-box { width: 20px; height: 20px; border: 1.5px solid #3d4d6a; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #323d54; margin-top: 1px; }
-.pm-item.checked .pm-box { background: #5a9e7a; border-color: #5a9e7a; }
-.pm-item.checked .pm-box::after { content: '✓'; font-size: 11px; color: #2b3245; font-weight: bold; }
-.pm-item.checked .pm-text { text-decoration: line-through; color: #6b7a99; }
-.pm-text { font-size: 14px; color: #c8d0e0; line-height: 1.4; }
-.pm-stat-row { display: flex; gap: 10px; margin-bottom: 20px; }
-.pm-stat { background: #323d54; border: 1px solid #3d4d6a; border-radius: 8px; padding: 10px 14px; flex: 1; text-align: center; }
-.pm-stat-num { font-family: 'DM Mono', monospace; font-size: 22px; color: #7eb8d4; }
-.pm-stat-lbl { font-family: 'DM Mono', monospace; font-size: 9px; color: #6b7a99; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+
+/* Project tab styles */
+.pt-section { margin-bottom: 24px; }
+.pt-slabel {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.pt-slabel::after { content: ''; flex: 1; height: 1px; background: var(--border); min-width: 20px; }
+.pt-prog { font-size: 9px; color: var(--primary); white-space: nowrap; }
+.phase-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: #e0e8f5;
+  color: var(--muted);
+}
+.phase-badge.complete { background: var(--success-bg); color: var(--success); }
+
+.pbar { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 12px; }
+.pbar-fill { height: 3px; background: var(--primary); border-radius: 2px; transition: width 0.3s; }
+
+.pt-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.pt-item:last-child { border-bottom: none; }
+
+.pt-box {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--border2);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--surface);
+  margin-top: 2px;
+  transition: all 0.15s;
+}
+.pt-item.checked .pt-box { background: var(--amber); border-color: var(--amber); }
+.pt-item.checked .pt-box::after { content: '✓'; font-size: 11px; color: white; font-weight: bold; }
+.pt-item.checked .pt-text { text-decoration: line-through; color: var(--hint); }
+.pt-text { font-size: 14px; color: var(--text); line-height: 1.4; }
+
+.pt-stat-row { display: flex; gap: 10px; margin-bottom: 20px; }
+.pt-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  flex: 1;
+  text-align: center;
+}
+.pt-stat-num { font-family: var(--mono); font-size: 22px; color: var(--primary); }
+.pt-stat-lbl { font-family: var(--mono); font-size: 9px; color: var(--hint); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+
+@media print {
+  .tabs, .header-right, .nav-btn, .saved, .past-notice, .print-btn { display: none !important; }
+  .page { display: block !important; }
+  .outer { box-shadow: none; }
+  body { background: white; }
+}
 </style>
 </head>
 <body>
+<div class="outer">
 
 <div class="header">
-  <div>
+  <div class="header-left">
     <div class="logo">NTG // Daily Log</div>
     <div class="date-nav">
       <button class="nav-btn" id="prevBtn">&#8592;</button>
@@ -108,13 +514,16 @@ textarea::placeholder { color: #4d5d7a; font-style: italic; font-size: 13px; }
 <div class="tabs">
   <button class="tab active" data-tab="priorities">Priorities</button>
   <button class="tab" data-tab="cio">CIO Pulse</button>
+  <button class="tab" data-tab="genesys">Genesys</button>
+  <button class="tab" data-tab="itglue">IT Glue</button>
+  <button class="tab" data-tab="ops">Ops</button>
   <button class="tab" data-tab="recharge">Recharge</button>
   <button class="tab" data-tab="brain">Brain Dump</button>
   <button class="tab" data-tab="week">Week</button>
   <button class="tab" data-tab="history">History</button>
-  <button class="tab" data-tab="map">Project Map</button>
 </div>
 
+<!-- Priorities -->
 <div class="page active" id="page-priorities">
   <div id="pastNotice" class="past-notice" style="display:none">Viewing past entry</div>
   <div class="section">
@@ -132,6 +541,7 @@ textarea::placeholder { color: #4d5d7a; font-style: italic; font-size: 13px; }
   </div>
 </div>
 
+<!-- CIO Pulse -->
 <div class="page" id="page-cio">
   <div class="section">
     <div class="slabel">Work Layer</div>
@@ -166,6 +576,156 @@ textarea::placeholder { color: #4d5d7a; font-style: italic; font-size: 13px; }
   </div>
 </div>
 
+<!-- Genesys -->
+<div class="page" id="page-genesys">
+  <div class="pt-stat-row">
+    <div class="pt-stat"><div class="pt-stat-num" id="gTotal">0</div><div class="pt-stat-lbl">Total</div></div>
+    <div class="pt-stat"><div class="pt-stat-num" id="gDone">0</div><div class="pt-stat-lbl">Done</div></div>
+    <div class="pt-stat"><div class="pt-stat-num" id="gLeft">0</div><div class="pt-stat-lbl">Left</div></div>
+  </div>
+  <div class="pt-section">
+    <div class="pt-slabel">Phase 1 — Root folder structure <span class="phase-badge complete">Complete</span> <span class="pt-prog" id="prog-g1"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-g1"></div></div>
+    <div id="group-g1">
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Create Policies &amp; Compliance</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Create Client Records</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Create Business Operations</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Create Technical Resources</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Create Training</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Create Communication Templates</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Policies → Policies &amp; Compliance</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">PenTests → Policies &amp; Compliance</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Client Data → Client Records</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Client Workstations and Servers → Client Records</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">NTG Inventory → Business Operations</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Internal Reports → Business Operations</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Services → Business Operations</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Vendor Data → Business Operations</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Audits → Business Operations</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">365 License Audit Info → Business Operations &gt; Audits</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Sangoma Documents → Business Operations &gt; Audits</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Technician Depot &gt; Audits &gt; Cloud Security → Business Operations &gt; Audits</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Technician Depot &gt; Audits &gt; Datto Device License Audit → Business Operations &gt; Audits</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Technician Depot &gt; Audits &gt; EDR → Business Operations &gt; Audits</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Technician Depot &gt; Audits &gt; RMM → Business Operations &gt; Audits</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Technician Depot &gt; MDM → Business Operations &gt; Audits</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">~ RUNBOOKS → Technical Resources</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Process Maps → Technical Resources</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Templates → Technical Resources</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Snippets and Scripts → Technical Resources</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Group Policies → Technical Resources</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">SSLCerts → Technical Resources</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">ISOs → Technical Resources</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Tools → Technical Resources</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">MyGlue Action Pack → Technical Resources</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">SEG Application &amp; Requirements.docx → Technical Resources</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Training → Training</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Video Uploads → Training</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Technician Depot &gt; Training → Training</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Client Communication Templates → Communication Templates</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">AppleCare_Proof_of_Coverage.eml → Business Operations</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Devices (3).csv → Business Operations &gt; NTG Inventory</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Reno Trip Leads - RMC.xlsx → Sales &amp; Marketing library</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Splashtop Billing Info.xlsx → Business Operations &gt; Audits</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">DATTO Backup &amp; Restore → delete (obsolete)</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Downloads → delete</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">desktop.ini → delete</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">stamps64 (3)20.4.exe → Technical Resources or delete</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Images / Logos / Font → evaluate, move or delete</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Delete Technician Depot folder (once emptied)</span></div>
+      <div class="pt-item" data-group="g1"><div class="pt-box"></div><span class="pt-text">Delete Technician Depot &gt; Audits folder (once emptied)</span></div>
+    </div>
+  </div>
+  <div class="pt-section">
+    <div class="pt-slabel">Phase 2 — Business Operations &gt; Audits <span class="pt-prog" id="prog-g2"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-g2"></div></div>
+    <div id="group-g2">
+      <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Move VOIP Contracts → Contracts library</span></div>
+      <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Move MSP Contracts → MSP Contracts library</span></div>
+      <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Resolve duplicate: EDR vs Datto EDR — confirm and merge</span></div>
+      <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Resolve duplicate: RMM vs Datto RMM — confirm and merge</span></div>
+      <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Move Devices over 30 days - Mar 16.csv → Business Operations &gt; NTG Inventory</span></div>
+      <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Move Unregistered SonicWalls.xlsx → Business Operations &gt; NTG Inventory</span></div>
+      <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Review Backup Audits folder — determine if compliance or ops</span></div>
+      <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Review remaining Audits subfolders — pull compliance-specific items to Policies &amp; Compliance</span></div>
+    </div>
+  </div>
+  <div class="pt-section">
+    <div class="pt-slabel">Phase 2 — Communication Templates <span class="pt-prog" id="prog-g3"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-g3"></div></div>
+    <div id="group-g3">
+      <div class="pt-item" data-group="g3"><div class="pt-box"></div><span class="pt-text">Revamp existing client communication email templates</span></div>
+      <div class="pt-item" data-group="g3"><div class="pt-box"></div><span class="pt-text">Add incident notification email templates</span></div>
+      <div class="pt-item" data-group="g3"><div class="pt-box"></div><span class="pt-text">Add service notification templates</span></div>
+      <div class="pt-item" data-group="g3"><div class="pt-box"></div><span class="pt-text">Add maintenance window templates</span></div>
+      <div class="pt-item" data-group="g3"><div class="pt-box"></div><span class="pt-text">File Client Notification Contact &amp; Delivery Setup SOP</span></div>
+    </div>
+  </div>
+  <div class="pt-section">
+    <div class="pt-slabel">Phase 2 — Technical Resources <span class="pt-prog" id="prog-g4"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-g4"></div></div>
+    <div id="group-g4">
+      <div class="pt-item" data-group="g4"><div class="pt-box"></div><span class="pt-text">Review and organize subfolder content</span></div>
+      <div class="pt-item" data-group="g4"><div class="pt-box"></div><span class="pt-text">Rebuild Client Onboarding worksheet</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- IT Glue -->
+<div class="page" id="page-itglue">
+  <div class="pt-stat-row">
+    <div class="pt-stat"><div class="pt-stat-num" id="iTotal">0</div><div class="pt-stat-lbl">Total</div></div>
+    <div class="pt-stat"><div class="pt-stat-num" id="iDone">0</div><div class="pt-stat-lbl">Done</div></div>
+    <div class="pt-stat"><div class="pt-stat-num" id="iLeft">0</div><div class="pt-stat-lbl">Left</div></div>
+  </div>
+  <div class="pt-section">
+    <div class="pt-slabel">Root cleanup <span class="pt-prog" id="prog-i1"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-i1"></div></div>
+    <div id="group-i1">
+      <div class="pt-item" data-group="i1"><div class="pt-box"></div><span class="pt-text">CyberQP - Integrating Customers with Autotask → KB (Internal)</span></div>
+      <div class="pt-item" data-group="i1"><div class="pt-box"></div><span class="pt-text">Pegasus Static Allocation - Spectrum Fiber → KB (Internal)</span></div>
+      <div class="pt-item" data-group="i1"><div class="pt-box"></div><span class="pt-text">Protecting RDWeb from Brute Force Attacks → KB (Internal)</span></div>
+      <div class="pt-item" data-group="i1"><div class="pt-box"></div><span class="pt-text">Tango Test → evaluate, keep or delete</span></div>
+    </div>
+  </div>
+  <div class="pt-section">
+    <div class="pt-slabel">Structure changes <span class="pt-prog" id="prog-i2"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-i2"></div></div>
+    <div id="group-i2">
+      <div class="pt-item" data-group="i2"><div class="pt-box"></div><span class="pt-text">Add Runbooks folder to IT Glue root</span></div>
+      <div class="pt-item" data-group="i2"><div class="pt-box"></div><span class="pt-text">Remove 1000/2000/3000/4000 numbering from SOP subfolders</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Ops -->
+<div class="page" id="page-ops">
+  <div class="pt-stat-row">
+    <div class="pt-stat"><div class="pt-stat-num" id="oTotal">0</div><div class="pt-stat-lbl">Total</div></div>
+    <div class="pt-stat"><div class="pt-stat-num" id="oDone">0</div><div class="pt-stat-lbl">Done</div></div>
+    <div class="pt-stat"><div class="pt-stat-num" id="oLeft">0</div><div class="pt-stat-lbl">Left</div></div>
+  </div>
+  <div class="pt-section">
+    <div class="pt-slabel">Services &amp; contracts review <span class="pt-prog" id="prog-o1"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-o1"></div></div>
+    <div id="group-o1">
+      <div class="pt-item" data-group="o1"><div class="pt-box"></div><span class="pt-text">Review all services — update descriptions, deactivate obsolete in Quoter</span></div>
+      <div class="pt-item" data-group="o1"><div class="pt-box"></div><span class="pt-text">Review all client contracts — verify line items match active services</span></div>
+      <div class="pt-item" data-group="o1"><div class="pt-box"></div><span class="pt-text">Audit unit counts on all contract line items for accuracy</span></div>
+    </div>
+  </div>
+  <div class="pt-section">
+    <div class="pt-slabel">Policy &amp; compliance <span class="pt-prog" id="prog-o2"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-o2"></div></div>
+    <div id="group-o2">
+      <div class="pt-item" data-group="o2"><div class="pt-box"></div><span class="pt-text">Fill in contact directory placeholders — EDP, IRP, DRP, BCP</span></div>
+      <div class="pt-item" data-group="o2"><div class="pt-box"></div><span class="pt-text">Resolve BAA gap (highest priority compliance item)</span></div>
+      <div class="pt-item" data-group="o2"><div class="pt-box"></div><span class="pt-text">Pre-vet a technical contractor for BCP coverage</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Recharge -->
 <div class="page" id="page-recharge">
   <div class="section">
     <div class="slabel">Low Energy Mode</div>
@@ -187,6 +747,7 @@ textarea::placeholder { color: #4d5d7a; font-style: italic; font-size: 13px; }
   </div>
 </div>
 
+<!-- Brain Dump -->
 <div class="page" id="page-brain">
   <div class="section">
     <div class="slabel">Get It Out</div>
@@ -194,6 +755,7 @@ textarea::placeholder { color: #4d5d7a; font-style: italic; font-size: 13px; }
   </div>
 </div>
 
+<!-- Week -->
 <div class="page" id="page-week">
   <div class="section">
     <div class="slabel">Weekly Focus</div>
@@ -201,6 +763,7 @@ textarea::placeholder { color: #4d5d7a; font-style: italic; font-size: 13px; }
   </div>
 </div>
 
+<!-- History -->
 <div class="page" id="page-history">
   <div class="section">
     <div class="slabel">Past Entries</div>
@@ -208,106 +771,9 @@ textarea::placeholder { color: #4d5d7a; font-style: italic; font-size: 13px; }
   </div>
 </div>
 
-<div class="page" id="page-map">
-  <div class="pm-stat-row">
-    <div class="pm-stat"><div class="pm-stat-num" id="pmTotal">0</div><div class="pm-stat-lbl">Total</div></div>
-    <div class="pm-stat"><div class="pm-stat-num" id="pmDone">0</div><div class="pm-stat-lbl">Done</div></div>
-    <div class="pm-stat"><div class="pm-stat-num" id="pmLeft">0</div><div class="pm-stat-lbl">Left</div></div>
-  </div>
-
-  <div class="pm-section">
-    <div class="pm-slabel">SharePoint — create new root folders <span class="pm-prog" id="prog-sp-create"></span></div>
-    <div class="pbar"><div class="pbar-fill" id="bar-sp-create"></div></div>
-    <div id="group-sp-create">
-      <div class="pm-item" data-group="sp-create"><div class="pm-box"></div><span class="pm-text">Create Policies &amp; Compliance</span></div>
-      <div class="pm-item" data-group="sp-create"><div class="pm-box"></div><span class="pm-text">Create Client Records</span></div>
-      <div class="pm-item" data-group="sp-create"><div class="pm-box"></div><span class="pm-text">Create Business Operations</span></div>
-      <div class="pm-item" data-group="sp-create"><div class="pm-box"></div><span class="pm-text">Create Technical Resources</span></div>
-      <div class="pm-item" data-group="sp-create"><div class="pm-box"></div><span class="pm-text">Create Training</span></div>
-      <div class="pm-item" data-group="sp-create"><div class="pm-box"></div><span class="pm-text">Create Communication Templates</span></div>
-    </div>
-  </div>
-
-  <div class="pm-section">
-    <div class="pm-slabel">SharePoint — move existing folders <span class="pm-prog" id="prog-sp-move"></span></div>
-    <div class="pbar"><div class="pbar-fill" id="bar-sp-move"></div></div>
-    <div id="group-sp-move">
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Policies → Policies &amp; Compliance</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">PenTests → Policies &amp; Compliance</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">365 License Audit Info → Policies &amp; Compliance &gt; Audits</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Sangoma Documents → Policies &amp; Compliance &gt; Audits</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Client Data → Client Records</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Client Workstations and Servers → Client Records</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">NTG Inventory → Business Operations</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Internal Reports → Business Operations</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Services → Business Operations</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Vendor Data → Business Operations</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Audits → Business Operations</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">365 License Audit Info → Business Operations &gt; Audits</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Sangoma Documents → Business Operations &gt; Audits</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">~ RUNBOOKS → Technical Resources</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Process Maps → Technical Resources</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Templates → Technical Resources</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Training → Training</span></div>
-      <div class="pm-item" data-group="sp-move"><div class="pm-box"></div><span class="pm-text">Video Uploads → Training</span></div>
-    </div>
-  </div>
-
-  <div class="pm-section">
-    <div class="pm-slabel">SharePoint — Technician Depot contents <span class="pm-prog" id="prog-sp-depot"></span></div>
-    <div class="pbar"><div class="pbar-fill" id="bar-sp-depot"></div></div>
-    <div id="group-sp-depot">
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Technician Depot &gt; Audits &gt; Cloud Security → Business Operations &gt; Audits</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Technician Depot &gt; Audits &gt; Datto Device License Audit → Business Operations &gt; Audits</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Technician Depot &gt; Audits &gt; EDR → Business Operations &gt; Audits</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Technician Depot &gt; Audits &gt; RMM → Business Operations &gt; Audits</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Delete Technician Depot &gt; Audits folder (once emptied)</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Snippets and Scripts → Technical Resources</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Group Policies → Technical Resources</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">SSLCerts → Technical Resources</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">ISOs → Technical Resources</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">MDM → Business Operations &gt; Audits</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Tools → Technical Resources</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">DATTO Backup &amp; Restore → delete (obsolete)</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">MyGlue Action Pack → Technical Resources</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Client Communication Templates → Communication Templates (revamp contents)</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Service Management Schedules → Business Operations</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Training (inside Depot) → Training</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Images / Logos / Font → evaluate, move or delete</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Downloads → delete</span></div>
-      <div class="pm-item" data-group="sp-depot"><div class="pm-box"></div><span class="pm-text">Delete Technician Depot folder (once emptied)</span></div>
-    </div>
-  </div>
-
-  <div class="pm-section">
-    <div class="pm-slabel">SharePoint — loose root files <span class="pm-prog" id="prog-sp-files"></span></div>
-    <div class="pbar"><div class="pbar-fill" id="bar-sp-files"></div></div>
-    <div id="group-sp-files">
-      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">AppleCare_Proof_of_Coverage.eml → Business Operations</span></div>
-      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">Devices (3).csv → Business Operations / NTG Inventory</span></div>
-      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">Reno Trip Leads - RMC.xlsx → move to Sales &amp; Marketing library (not Documents)</span></div>
-      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">SEG Application &amp; Requirements.docx → Technical Resources</span></div>
-      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">Splashtop Billing Info.xlsx → Business Operations &gt; Audits</span></div>
-      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">desktop.ini → delete</span></div>
-      <div class="pm-item" data-group="sp-files"><div class="pm-box"></div><span class="pm-text">stamps64 (3)20.4.exe → Technical Resources or delete</span></div>
-    </div>
-  </div>
-
-  <div class="pm-section">
-    <div class="pm-slabel">IT Glue — cleanup &amp; structure <span class="pm-prog" id="prog-itg"></span></div>
-    <div class="pbar"><div class="pbar-fill" id="bar-itg"></div></div>
-    <div id="group-itg">
-      <div class="pm-item" data-group="itg"><div class="pm-box"></div><span class="pm-text">CyberQP - Integrating Customers with Autotask → KB (Internal)</span></div>
-      <div class="pm-item" data-group="itg"><div class="pm-box"></div><span class="pm-text">Pegasus Static Allocation - Spectrum Fiber → KB (Internal)</span></div>
-      <div class="pm-item" data-group="itg"><div class="pm-box"></div><span class="pm-text">Protecting RDWeb from Brute Force Attacks → KB (Internal)</span></div>
-      <div class="pm-item" data-group="itg"><div class="pm-box"></div><span class="pm-text">Tango Test → evaluate, keep or delete</span></div>
-      <div class="pm-item" data-group="itg"><div class="pm-box"></div><span class="pm-text">Add Runbooks folder to IT Glue root</span></div>
-      <div class="pm-item" data-group="itg"><div class="pm-box"></div><span class="pm-text">Remove 1000/2000/3000/4000 numbering from SOP subfolders</span></div>
-    </div>
-  </div>
-</div>
-
 <div class="saved" id="savedMsg">Saved</div>
+
+</div><!-- /outer -->
 
 <script>
 const DAYS=['Mon','Tue','Wed','Thu','Fri'];
@@ -377,7 +843,7 @@ function buildWeek(){
     const lbl=document.createElement('div');lbl.className='dname';lbl.textContent=day;
     const ta=document.createElement('textarea');
     ta.placeholder='focus...';ta.value=data['d'+i]||'';
-    ta.style.cssText='font-size:11px;min-height:60px;text-align:center;width:100%;background:none;border:none;color:#d4d4d8;outline:none;resize:none;line-height:1.5;display:block;';
+    ta.style.cssText='font-size:11px;min-height:60px;text-align:center;width:100%;background:none;border:none;color:#1a1e2e;outline:none;resize:none;line-height:1.5;display:block;';
     card.appendChild(lbl);card.appendChild(ta);
     row.appendChild(card);
     ta.addEventListener('input',()=>{ar(ta);const d=lg(wk);d['d'+i]=ta.value;ls(wk,d);showSaved();});
@@ -432,18 +898,12 @@ FIELDS.forEach(id=>{
 let tSec=300,tInt=null,tRun=false;
 document.getElementById('timerBtn').addEventListener('click',function(e){
   e.preventDefault();
-  if(tRun){
-    clearInterval(tInt);tRun=false;this.textContent='Resume';
-    document.getElementById('timerDisp').classList.remove('running');
-  }else{
-    tRun=true;this.textContent='Pause';
-    document.getElementById('timerDisp').classList.add('running');
-    tInt=setInterval(()=>{
-      tSec--;const m=Math.floor(tSec/60),s=tSec%60;
+  if(tRun){clearInterval(tInt);tRun=false;this.textContent='Resume';document.getElementById('timerDisp').classList.remove('running');}
+  else{tRun=true;this.textContent='Pause';document.getElementById('timerDisp').classList.add('running');
+    tInt=setInterval(()=>{tSec--;const m=Math.floor(tSec/60),s=tSec%60;
       document.getElementById('timerDisp').textContent=pad(m)+':'+pad(s);
       if(tSec<=0){clearInterval(tInt);tRun=false;document.getElementById('timerDisp').classList.remove('running');document.getElementById('timerDisp').classList.add('done');document.getElementById('timerBtn').textContent='Done';}
-    },1000);
-  }
+    },1000);}
 });
 document.getElementById('timerResetBtn').addEventListener('click',function(e){
   e.preventDefault();clearInterval(tInt);tRun=false;tSec=300;
@@ -452,57 +912,71 @@ document.getElementById('timerResetBtn').addEventListener('click',function(e){
   document.getElementById('timerBtn').textContent='Start';
 });
 
-loadDay(TODAY);
-buildWeek();
+const PT_GENESYS='pt-genesys',PT_ITGLUE='pt-itglue',PT_OPS='pt-ops';
+const PT_CONFIG=[
+  {key:PT_GENESYS,groups:['g1','g2','g3','g4'],total:'gTotal',done:'gDone',left:'gLeft'},
+  {key:PT_ITGLUE, groups:['i1','i2'],           total:'iTotal',done:'iDone',left:'iLeft'},
+  {key:PT_OPS,    groups:['o1','o2'],            total:'oTotal',done:'oDone',left:'oLeft'},
+];
 
-// Project map
-const PM_KEY = 'pm-checklist';
-const GROUPS = ['sp-create','sp-move','sp-depot','sp-files','itg'];
-
-function pmLoad() {
-  const data = lg(PM_KEY);
-  document.querySelectorAll('.pm-item').forEach((item, i) => {
-    if (data[i]) item.classList.add('checked');
-  });
-  pmUpdateAll();
+function ptGetKey(item){
+  const g=item.dataset.group;
+  if(['g1','g2','g3','g4'].includes(g))return PT_GENESYS;
+  if(['i1','i2'].includes(g))return PT_ITGLUE;
+  if(['o1','o2'].includes(g))return PT_OPS;
+  return null;
 }
 
-function pmSave() {
-  const data = {};
-  document.querySelectorAll('.pm-item').forEach((item, i) => {
-    if (item.classList.contains('checked')) data[i] = true;
+function ptSave(storeKey){
+  const data={};
+  document.querySelectorAll('.pt-item').forEach((item,i)=>{
+    if(ptGetKey(item)===storeKey&&item.classList.contains('checked'))data[i]=true;
   });
-  ls(PM_KEY, data);
+  ls(storeKey,data);
 }
 
-function pmUpdateAll() {
-  const all = document.querySelectorAll('.pm-item');
-  const done = document.querySelectorAll('.pm-item.checked');
-  document.getElementById('pmTotal').textContent = all.length;
-  document.getElementById('pmDone').textContent = done.length;
-  document.getElementById('pmLeft').textContent = all.length - done.length;
-  GROUPS.forEach(g => {
-    const items = document.querySelectorAll('.pm-item[data-group="'+g+'"]');
-    const checked = document.querySelectorAll('.pm-item[data-group="'+g+'"].checked');
-    const pct = items.length > 0 ? Math.round((checked.length / items.length) * 100) : 0;
-    const progEl = document.getElementById('prog-'+g);
-    const barEl = document.getElementById('bar-'+g);
-    if (progEl) progEl.textContent = checked.length + '/' + items.length;
-    if (barEl) barEl.style.width = pct + '%';
+function ptLoad(){
+  const allItems=document.querySelectorAll('.pt-item');
+  [PT_GENESYS,PT_ITGLUE,PT_OPS].forEach(storeKey=>{
+    const data=lg(storeKey);
+    allItems.forEach((item,i)=>{if(ptGetKey(item)===storeKey&&data[i])item.classList.add('checked');});
+  });
+  ptUpdateAll();
+}
+
+function ptUpdateAll(){
+  PT_CONFIG.forEach(cfg=>{
+    let total=0,done=0;
+    cfg.groups.forEach(g=>{
+      const items=document.querySelectorAll('.pt-item[data-group="'+g+'"]');
+      const checked=document.querySelectorAll('.pt-item[data-group="'+g+'"].checked');
+      total+=items.length;done+=checked.length;
+      const pct=items.length>0?Math.round((checked.length/items.length)*100):0;
+      const progEl=document.getElementById('prog-'+g);
+      const barEl=document.getElementById('bar-'+g);
+      if(progEl)progEl.textContent=checked.length+'/'+items.length;
+      if(barEl)barEl.style.width=pct+'%';
+    });
+    document.getElementById(cfg.total).textContent=total;
+    document.getElementById(cfg.done).textContent=done;
+    document.getElementById(cfg.left).textContent=total-done;
   });
 }
 
-document.querySelectorAll('.pm-item').forEach(item => {
-  item.addEventListener('click', function(e) {
+document.querySelectorAll('.pt-item').forEach(item=>{
+  item.addEventListener('click',function(e){
     e.preventDefault();
     this.classList.toggle('checked');
-    pmSave();
-    pmUpdateAll();
+    const k=ptGetKey(this);
+    if(k)ptSave(k);
+    ptUpdateAll();
     showSaved();
   });
 });
 
-pmLoad();
+loadDay(TODAY);
+buildWeek();
+ptLoad();
 </script>
 </body>
 </html>
