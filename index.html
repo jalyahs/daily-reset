@@ -939,12 +939,20 @@ async function ptLoad(){
     const res=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':BIN_KEY,'X-Bin-Meta':'false'}});
     if(res.ok){
       const json=await res.json();
-      ptData=Object.assign({genesys:{},itglue:{},ops:{}},json);
+      // Only update if bin has actual data
+      const hasData=Object.values(json).some(v=>Object.keys(v).length>0);
+      if(hasData){
+        ptData=Object.assign({genesys:{},itglue:{},ops:{}},json);
+        ptApply();
+      } else {
+        // Bin is empty — try local cache first
+        try{const c=localStorage.getItem('pt-cache');if(c){ptData=JSON.parse(c);ptApply();}}catch{}
+      }
     }
-  }catch(e){console.warn('JSONBin load failed, using local cache');
-    try{const c=localStorage.getItem('pt-cache');if(c)ptData=JSON.parse(c);}catch{}
+  }catch(e){
+    console.warn('JSONBin load failed, using local cache');
+    try{const c=localStorage.getItem('pt-cache');if(c){ptData=JSON.parse(c);ptApply();}}catch{}
   }
-  ptApply();
   ptUpdateAll();
 }
 
