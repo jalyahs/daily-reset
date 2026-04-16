@@ -637,17 +637,41 @@ textarea::placeholder { color: var(--hint); font-style: italic; font-size: 13px;
     </div>
   </div>
   <div class="pt-section">
-    <div class="pt-slabel">Phase 2 — Business Operations &gt; Audits <span class="pt-prog" id="prog-g2"></span></div>
+    <div class="pt-slabel">Phase 2 — Business Operations &gt; Audits general <span class="pt-prog" id="prog-g2"></span></div>
     <div class="pbar"><div class="pbar-fill" id="bar-g2"></div></div>
     <div id="group-g2">
-      <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Move VOIP Contracts → Contracts library</span></div>
-      <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Move MSP Contracts → MSP Contracts library</span></div>
       <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Resolve duplicate: EDR vs Datto EDR — confirm and merge</span></div>
       <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Resolve duplicate: RMM vs Datto RMM — confirm and merge</span></div>
       <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Move Devices over 30 days - Mar 16.csv → Business Operations &gt; NTG Inventory</span></div>
       <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Move Unregistered SonicWalls.xlsx → Business Operations &gt; NTG Inventory</span></div>
-      <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Review Backup Audits folder — determine if compliance or ops</span></div>
       <div class="pt-item" data-group="g2"><div class="pt-box"></div><span class="pt-text">Review remaining Audits subfolders — pull compliance-specific items to Policies &amp; Compliance</span></div>
+    </div>
+  </div>
+  <div class="pt-section">
+    <div class="pt-slabel">Phase 2 — Business Operations &gt; Audits restructure <span class="pt-prog" id="prog-g5"></span></div>
+    <div class="pbar"><div class="pbar-fill" id="bar-g5"></div></div>
+    <div id="group-g5">
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Move VOIP Contracts → Contracts library</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Move MSP Contracts → MSP Contracts library</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Create subfolder: Kaseya 365</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Create subfolder: Kaseya</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Create subfolder: Pax 8</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Create subfolder: Direct</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Rename Cloud Security → SaaS Alerts, move to Kaseya 365</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Move Datto EDR → Kaseya 365</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Move RocketCyber → Kaseya 365</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Move EDR → Kaseya 365</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Rename Backup Audits → Endpoint Backup, move to Kaseya 365</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Move Datto RMM → Kaseya</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Move Datto Device License Audit → Kaseya</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Move RMM → Kaseya</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Rename Pax 8 Services → Pax 8, move to Pax 8 subfolder</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Move Microsoft Subscriptions → Pax 8</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Move 365 License Audit Info → Pax 8</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Rename MDM → Addigy, move to Pax 8</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Move Splashtop → Direct</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Move PrinterLogic → Direct</span></div>
+      <div class="pt-item" data-group="g5"><div class="pt-box"></div><span class="pt-text">Move Sangoma Documents → Direct</span></div>
     </div>
   </div>
   <div class="pt-section">
@@ -914,7 +938,7 @@ document.getElementById('timerResetBtn').addEventListener('click',function(e){
 
 // Project tab checklists — localStorage per device
 const PT_CONFIG=[
-  {key:'pt-genesys',groups:['g1','g2','g3','g4'],total:'gTotal',done:'gDone',left:'gLeft'},
+  {key:'pt-genesys',groups:['g1','g2','g3','g4','g5'],total:'gTotal',done:'gDone',left:'gLeft'},
   {key:'pt-itglue', groups:['i1','i2'],           total:'iTotal',done:'iDone',left:'iLeft'},
   {key:'pt-ops',    groups:['o1','o2'],            total:'oTotal',done:'oDone',left:'oLeft'},
 ];
